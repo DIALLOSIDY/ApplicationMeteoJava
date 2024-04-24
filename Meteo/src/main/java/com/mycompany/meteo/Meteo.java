@@ -4,6 +4,9 @@
 
 package com.mycompany.meteo;
 
+import java.awt.EventQueue;
+import javax.swing.JFrame;
+
 /**
  *
  * @author utilisateur
@@ -11,7 +14,16 @@ package com.mycompany.meteo;
 public class Meteo {
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
-        new MeteoFrame("Meteo");
+        EventQueue.invokeLater(new Runnable(){
+            public void run(){
+                System.out.println("Hello World!");
+               MeteoFrame frame= new MeteoFrame("Meteo");
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame. setLocationRelativeTo(null);
+                frame.setSize(400, 400);
+                frame.setVisible(true);
+            }
+        });
+
     }
 }
