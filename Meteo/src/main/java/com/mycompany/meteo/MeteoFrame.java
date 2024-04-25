@@ -9,6 +9,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 
 // Pour les requêtes okhttp
@@ -24,7 +25,7 @@ import okhttp3.Response;
 public class MeteoFrame extends JFrame {
     public MeteoFrame(String title){
         super(title);
-        String url ="https://ai-weather-by-meteosource.p.rapidapi.com/find_places?text=lyon&language=en\n" ;
+        String url ="https://weatherbit-v1-mashape.p.rapidapi.com/forecast/3hourly?lat=45.7578137&lon=4.8320114" ;
         
         System.out.println("avant la requette");
         
@@ -68,21 +69,27 @@ public class MeteoFrame extends JFrame {
                 System.out.println(Thread.currentThread().getName());
                 
                 OkHttpClient client = new OkHttpClient();
-                Request request = new Request.Builder()
-                    .url(url)
-                    .get()
-                    .addHeader("X-RapidAPI-Key", "0ecc3ebd7emsh522740b0d22b6d6p121e16jsn270b210d61a4")
-                    .addHeader("X-RapidAPI-Host", "ai-weather-by-meteosource.p.rapidapi.com")
-                    .build();
+
+             Request request = new Request.Builder()
+            .url(url)
+            .get()
+            .addHeader("X-RapidAPI-Key", "0ecc3ebd7emsh522740b0d22b6d6p121e16jsn270b210d61a4")
+            .addHeader("X-RapidAPI-Host", "weatherbit-v1-mashape.p.rapidapi.com")
+            .build();
         
                 try {
+                    
                     Response response = client.newCall(request).execute();
                     if (response.isSuccessful()){ //on verifie si la reponse est un ereponse avec succes
                         return response.body().string(); 
                     }
+                    else{
+                        JOptionPane.showMessageDialog(null, "oups une erreur est survenue ,veiller ressayer", "ERREUR", JOptionPane.ERROR_MESSAGE);
+                    }
                   
                     
                 } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(null, "oups une erreur est survenue ,veiller ressayer", "ERREUR", JOptionPane.ERROR_MESSAGE);
                     Logger.getLogger(MeteoFrame.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 
@@ -98,7 +105,9 @@ public class MeteoFrame extends JFrame {
                 
                 try {
                     System.out.println(get());
-                } catch (InterruptedException |ExecutionException ex) {
+                } 
+                catch (InterruptedException |ExecutionException ex) {
+                    JOptionPane.showMessageDialog(null, "oups une erreur est survenue ,veiller ressayer", "ERREUR", JOptionPane.ERROR_MESSAGE);
                     System.out.println("reponse vide :"+ex.getMessage());
                 } 
               
