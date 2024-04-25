@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.mycompany.meteo;
 
 import java.io.IOException;
@@ -13,27 +9,23 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 
 // Pour les requêtes okhttp
-
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 
-/**
- *
- * @author utilisateur
- */
 public class MeteoFrame extends JFrame {
     public MeteoFrame(String title){
         super(title);
         String url ="https://weatherbit-v1-mashape.p.rapidapi.com/forecast/3hourly?lat=45.7578137&lon=4.8320114" ;
         
-        System.out.println("avant la requette");
+        System.out.println("avant la requête");
         
-        new forecastWorker(url).execute();
+        new ForecastWorker(url).execute();
         
-        System.out.println("apres la requette");
-        
-        
+        System.out.println("après la requête");
     }    
     
     
@@ -50,67 +42,73 @@ public class MeteoFrame extends JFrame {
          * c'est un Thread 
          */
     
-    class forecastWorker extends SwingWorker<String, Void>{
-        
+    class ForecastWorker extends SwingWorker
+
+    {
         private String url ;
-        /**
-         * constructeur de la classe 
-         * @param _url represente l'url ves la requelle la requette sera envoyé
-         */
-        public forecastWorker(String _url){
+
+        public ForecastWorker(String _url){
             this.url = _url ;
         }
 
-         @Override
-            
-            // Permet de faire la tâche en background, dans notre cas la tâche 
-            // à effectuer c'est la requête HTTP
-            protected String doInBackground(){
-                System.out.println(Thread.currentThread().getName());
-                
-                OkHttpClient client = new OkHttpClient();
+        @Override
+        protected JSONObject doInBackground() {
+            System.out.println(Thread.currentThread().getName());
 
-             Request request = new Request.Builder()
-            .url(url)
-            .get()
-            .addHeader("X-RapidAPI-Key", "0ecc3ebd7emsh522740b0d22b6d6p121e16jsn270b210d61a4")
-            .addHeader("X-RapidAPI-Host", "weatherbit-v1-mashape.p.rapidapi.com")
-            .build();
-        
-                try {
+            OkHttpClient client = new OkHttpClient();
+
+            Request request = new Request.Builder()
+               .url(url)
+               .get()
+               .addHeader("X-RapidAPI-Key", "0ecc3ebd7emsh522740b0d22b6d6p121e16jsn270b210d61a4")
+               .addHeader("X-RapidAPI-Host", "weatherbit-v1-mashape.p.rapidapi.com")
+               .build();
+
+            try {
                     
-                    Response response = client.newCall(request).execute();
-                    if (response.isSuccessful()){ //on verifie si la reponse est un ereponse avec succes
-                        return response.body().string(); 
-                    }
-                    else{
-                        JOptionPane.showMessageDialog(null, "oups une erreur est survenue ,veiller ressayer", "ERREUR", JOptionPane.ERROR_MESSAGE);
-                    }
-                  
-                    
-                } catch (IOException ex) {
-                    JOptionPane.showMessageDialog(null, "oups une erreur est survenue ,veiller ressayer", "ERREUR", JOptionPane.ERROR_MESSAGE);
-                    Logger.getLogger(MeteoFrame.class.getName()).log(Level.SEVERE, null, ex);
+                Response response = client.newCall(request).execute();
+                if (response.isSuccessful()){ //on verifie si la reponse est un ereponse avec succes
+                    String jsonData= response.body().string(); //retour de la requette sous forme de chaine de caractere
+                    //a ce stade on utilise une librairie pour retourner notre resultat
+                    //sous forme d'un objet jSon pour pouvoir le manipuler plus facilement et extraire les donnees dont on a besoin 
+                    JSONObject forcast =(JSONObject) JSONValue.parse(jsonData) ;//prend une string retourne un object JSON
+                    return forcast ;
                 }
-                
-                return null;
-            }
-            
-             @Override
-            // Cette fonction nous permettra de gérer les traitements après la réponse 
-            // de notre requête 
-             //dans cette fonction on se retrovera dans le event thread
-             //donc on peut modifier les composantes de notre fenetre 
-            protected void done() {
-                
-                try {
-                    System.out.println(get());
-                } 
-                catch (InterruptedException |ExecutionException ex) {
+                else{
                     JOptionPane.showMessageDialog(null, "oups une erreur est survenue ,veiller ressayer", "ERREUR", JOptionPane.ERROR_MESSAGE);
-                    System.out.println("reponse vide :"+ex.getMessage());
-                } 
-              
+                }
+                  
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(null, "oups une erreur est survenue ,veiller ressayer", "ERREUR", JOptionPane.ERROR_MESSAGE);
+                Logger.getLogger(MeteoFrame.class.getName()).log(Level.SEVERE, null, ex);
             }
+                
+            return null;
+        }
+            
+        @Override
+        // Cette fonction nous permettra de gérer les traitements après la réponse 
+        // de notre requête 
+        //dans cette fonction on se retrovera dans le event thread
+        //donc on peut modifier les composantes de notre fenetre 
+        protected void done() {
+            try {
+                JSONObject forcast = (JSONObject) get(); //on recupere tout l'objet JSon
+                JSONArray data = (JSONArray) forcast.get("data");// on recupere la premiere cle data qui contient un tableau
+                JSONObject firstEntry = (JSONObject) data.get(0); //dans data on recupere la cle 0 qui est un objet 
+                double temperature = (double) firstEntry.get("temp"); //et dans la cle 0 on recupere enfin la cle temperature
+                //remarque en recuperant les donnees JSON les { correspondent a des objets et les [ a des Arrays
+                System.out.println("Température : " + temperature);
+            } 
+            catch (InterruptedException | ExecutionException ex) {
+                JOptionPane.showMessageDialog(null, "Oups, une erreur est survenue, veuillez réessayer", "ERREUR", JOptionPane.ERROR_MESSAGE);
+                System.out.println("Réponse vide : " + ex.getMessage());
+            }
+        }
     }
 }
+
+
+
+
+
