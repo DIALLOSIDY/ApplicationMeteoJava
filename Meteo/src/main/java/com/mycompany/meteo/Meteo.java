@@ -4,8 +4,11 @@
 
 package com.mycompany.meteo;
 
+import java.awt.Color;
 import java.awt.EventQueue;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 
 /**
  *
@@ -19,9 +22,14 @@ public class Meteo {
                 System.out.println("Hello World!");
                MeteoFrame frame= new MeteoFrame("Meteo");
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                frame. setLocationRelativeTo(null);
+               
                 frame.setSize(400, 400);
                 frame.setVisible(true);
+                frame.getContentPane().setBackground(Color.blue);
+                
+                
+                
+                
             }
         });
 
