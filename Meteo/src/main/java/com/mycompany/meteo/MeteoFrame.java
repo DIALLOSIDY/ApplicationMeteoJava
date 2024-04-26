@@ -38,8 +38,8 @@ public class MeteoFrame extends JFrame {
     JLabel timeLabel ;
     JLabel temperature ;
     JPanel otherInfo ;
-    JLabel hummidityLabel ;
-    JLabel hummidityValue ;
+    JLabel windLabel ;
+    JLabel windValue ;
     JLabel precipLabel ;
     JLabel precipValue ;
     
@@ -84,18 +84,18 @@ public class MeteoFrame extends JFrame {
         otherInfo =new JPanel();
         otherInfo.setLayout(new GridLayout(2,2));
         otherInfo.setBackground(Color.blue);
-        hummidityLabel=new JLabel("hummidity",SwingConstants.CENTER);
-        hummidityLabel.setForeground(new Color(255,255,255,128));
-        hummidityValue=new JLabel("--",SwingConstants.CENTER);
-        hummidityValue.setForeground(Color.WHITE);
+        windLabel=new JLabel("vitesse du vent ",SwingConstants.CENTER);
+        windLabel.setForeground(new Color(255,255,255,128));
+        windValue=new JLabel("--",SwingConstants.CENTER);
+        windValue.setForeground(Color.WHITE);
         precipLabel=new JLabel("precipitation",SwingConstants.CENTER);
         precipLabel.setForeground(new Color(255,255,255,128));
         precipValue=new JLabel("--",SwingConstants.CENTER);
         precipValue.setForeground(Color.WHITE);
         //ajout des elelment dans JPanel
-        otherInfo.add(hummidityLabel);
+        otherInfo.add(windLabel);
         otherInfo.add(precipLabel);
-        otherInfo.add(hummidityValue);
+        otherInfo.add(windValue);
         otherInfo.add(precipValue);
         
         
@@ -183,13 +183,20 @@ public class MeteoFrame extends JFrame {
                 JSONObject forcast = (JSONObject) get(); //on recupere tout l'objet JSon
                 JSONArray data = (JSONArray) forcast.get("data");// on recupere la premiere cle data qui contient un tableau
                 JSONObject firstEntry = (JSONObject) data.get(0); //dans data on recupere la cle 0 qui est un objet 
-                double temperature = (double) firstEntry.get("temp"); //et dans la cle 0 on recupere enfin la cle temperature
+                Double temperatD = (Double) firstEntry.get("temp"); //et dans la cle 0 on recupere enfin la cle temperature
+                int temperati =temperatD.intValue();
+                String timeZone =(String)forcast.get("timezone");
                 Long time = (Long) firstEntry.get("ts");// on recupere le nombre de seconde ecoulées depuis 1970
                 
-                
+                String tempsActuel =convertir(time,timeZone);
+                Double vent =(Double)firstEntry.get("wind_spd");
+                System.out.println("temps" +time);
+                timeLabel.setText("Il est " +tempsActuel+ "et la temperature est ");
+                temperature.setText(String.valueOf(temperati)+"°");
+                windValue.setText(vent+"");
                 //remarque en recuperant les donnees JSON les { correspondent a des objets et les [ a des Arrays
                 System.out.println("Température : " + temperature);
-                System.out.println("Température : " + time);
+                //System.out.println("Température : " + time);
                 
             } 
             catch (InterruptedException | ExecutionException ex) {
@@ -202,15 +209,18 @@ public class MeteoFrame extends JFrame {
     /**
      * cette fonction converti le nombre de seconde ecoulé depuis 1970 en format d'heure 
      * @param time le nombre de seconde ecoulé depuis 1970
+     * @param timeZone timeZone de la ville recuperé dans les donnes de l'API
      * @return la date au format souhaité
      */
-    public String convertir(Long time){
-        Date date =new Date(time *1000); //convertir le nombre de seconde en milliseconde 
-        SimpleDateFormat formatter =new SimpleDateFormat("yyyy-mm-dd-hh-mm-ss z");
-        formatter.setTimeZone(TimeZone.getTimeZone("GMT-4"));
+    public String convertir(Long time,String timeZone){
+        Date date =new Date(time ); //convertir le nombre de seconde en milliseconde 
+        SimpleDateFormat formatter =new SimpleDateFormat("HH:mm ");
+        formatter.setTimeZone(TimeZone.getTimeZone(timeZone));
         String formater =formatter.format(date);
         return formater ;
     }
+    
+   
 
 }
 
