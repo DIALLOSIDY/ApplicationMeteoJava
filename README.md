@@ -16,7 +16,7 @@ Java : Version 8 ou supérieure
 Maven : Pour gérer les dépendances du projet
 
 Installation
-Clonez ce dépôt sur votre machine locale :git clone <lien_vers_le_dépôt>
+Clonez ce dépôt sur votre machine locale :git clone https://github.com/DIALLOSIDY/ApplicationMeteoJava.git
 
 
 Accédez au répertoire du projet :cd Meteo
@@ -27,8 +27,9 @@ Compilez et exécutez l'application à l'aide de Maven : mvn compile exec:java
 Captures d'écran
 
 
-Auteurs
+Auteurs :
 Diallo Sidy
-Licence
+
+Licence :
 Ce projet est sous licence MIT.
 
