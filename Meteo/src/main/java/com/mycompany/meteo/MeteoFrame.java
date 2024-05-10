@@ -49,7 +49,7 @@ public class MeteoFrame extends JFrame {
     public MeteoFrame(String title){
         super(title);
         Component contentPane =getContentPane();
-        String url ="https://weatherbit-v1-mashape.p.rapidapi.com/forecast/3hourly?lat=45.7578137&lon=4.8320114" ;
+        String url ="https://weatherbit-v1-mashape.p.rapidapi.com/forecast/3hourly?lat=45.7&lon=4.8" ;
         //constraint.insets =new Insets(10,10,10,10);
        
         ((JComponent)contentPane).setBorder(BorderFactory.createEmptyBorder(14,14,14,14));
@@ -214,7 +214,7 @@ public class MeteoFrame extends JFrame {
      */
     public String convertir(Long time,String timeZone){
         Date date =new Date(time ); //convertir le nombre de seconde en milliseconde 
-        SimpleDateFormat formatter =new SimpleDateFormat("HH:mm ");
+        SimpleDateFormat formatter =new SimpleDateFormat("HH");
         formatter.setTimeZone(TimeZone.getTimeZone(timeZone));
         String formater =formatter.format(date);
         return formater ;
