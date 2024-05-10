@@ -25,7 +25,7 @@ Compilez et exécutez l'application à l'aide de Maven : mvn compile exec:java
 
 
 
-![Captures d'écran](Data/capture.png)
+![Captures d'écran](Meteo/src/main/java/Data/capture.png)
 
 Auteurs :
 Diallo Sidy
